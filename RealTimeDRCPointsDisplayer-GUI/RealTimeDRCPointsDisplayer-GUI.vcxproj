@@ -93,6 +93,8 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>Main</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,6 +126,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ddc.h" />
+    <ClInclude Include="drc_assets.h" />
+    <ClInclude Include="eosd.h" />
+    <ClInclude Include="gfw.h" />
+    <ClInclude Include="GUI.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="hsifs.h" />
+    <ClInclude Include="in.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="lolk.h" />
+    <ClInclude Include="mof.h" />
+    <ClInclude Include="pcb.h" />
+    <ClInclude Include="pofv.h" />
+    <ClInclude Include="ProcessJSON.h" />
+    <ClInclude Include="ProcessMemory.h" />
+    <ClInclude Include="sa.h" />
+    <ClInclude Include="td.h" />
+    <ClInclude Include="ufo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GUI.resx">
+      <DependentUpon>GUI.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
