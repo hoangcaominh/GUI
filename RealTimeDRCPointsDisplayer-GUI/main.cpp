@@ -10,4 +10,3 @@ void Main(array<String^>^ args) {
 	RealTimeDRCPointsDisplayerGUI::GUI form;
 	Application::Run(%form);
 }
-

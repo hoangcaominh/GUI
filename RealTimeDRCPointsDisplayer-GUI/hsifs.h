@@ -21,7 +21,7 @@ namespace ns_hsifs
 	{
 		shottype = idx_character[character];
 
-		if (idx_difficulty[difficulty] != "Extra")
+		if (strcmp(idx_difficulty[difficulty], "Extra") != 0)
 		{
 			shottype += idx_season[season];
 		}

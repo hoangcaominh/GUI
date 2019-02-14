@@ -4,8 +4,8 @@
 
 namespace ns_gfw
 {
-	// variables for manually counting misses
-	char lives, _lives;
+	// variables for manually counting misses (2 byte int)
+	unsigned short lives, _lives;
 
 	// variables for recording key pressed
 	DWORD p_is_bomb;
@@ -24,7 +24,7 @@ namespace ns_gfw
 
 	void countMisses()
 	{
-		if (lives == _lives - 1)	// miss
+		if (lives == _lives - 10000)	// miss
 		{
 			misses++;
 		}

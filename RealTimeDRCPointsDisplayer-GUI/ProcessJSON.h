@@ -12,7 +12,7 @@
 using json = nlohmann::json;
 
 // json objects
-json WRs, Rubrics;
+json WRs, Rubrics, config;
 
 // check if a key exists
 bool keyExist(json outer_object, const char* key)
@@ -103,4 +103,47 @@ bool Load_wrs()
 	read >> WRs;
 	
 	return false;
+}
+
+// check new version
+
+BOOL Download_config()
+{
+	// result of downloading world record file (temporary url)
+	HRESULT hResult = URLDownloadToFile(NULL, _T("https://raw.githubusercontent.com/hoangcaominh/RealTimeDRCPointsDisplayer/master/RealTimeDRCPointsDisplayer/config.json"), _T("_config.json"), 0, NULL);
+
+	switch (hResult)
+	{
+		// successfully downloaded
+	case S_OK:
+		return 0;
+
+		// out of memory
+	case E_OUTOFMEMORY:
+		return 2;
+
+		// file not valid
+	case INET_E_DOWNLOAD_FAILURE:
+		return 3;
+
+		// other errors
+	default:
+		return 1;
+	}
+
+	return 1;
+}
+
+bool Load_config()
+{
+	std::ifstream read("config.json");
+	if (read.fail())
+	{
+		return false;
+	}
+
+	// successfully parsed rubrics file
+	read >> config;
+
+	return true;
 }

@@ -19,12 +19,12 @@ const char* idx_game[] = { "HRtP", "SoEW", "PoDD", "LLS", "MS", "EoSD", "PCB", "
 const char* idx_difficulty[] = { "Easy", "Normal", "Hard", "Lunatic", "Extra", "Phantasm" };
 
 // Global variables
-static char game, character, type, difficulty, misses, bombs;
-static std::string shottype;
-static ull score;
+char game, character, type, difficulty, misses, bombs;
+std::string shottype;
+ull score;
 
 // misses and bombs variables
-static float miss; static char firstBomb, bomb;
+float miss; char firstBomb, bomb;
 // survival variables
 unsigned short surv_base; float surv_exp;
 // scoring variables
@@ -46,7 +46,7 @@ char ufos, ufos_red, ufos_green, ufos_blue, ufos_rainbow;
 unsigned short spirits; char trances;
 
 // Variables for HSiFS
-static unsigned short releases;
+unsigned short releases;
 // Rubric variables
 char season, firstRelease; float release;
 
@@ -75,7 +75,7 @@ float getMultiplier(const char* game, const char* shottype_route)
 // get rubrics for survival
 void getSurvRubrics()
 {
-	if (idx_game[game] != "PoDD" && idx_game[game] != "PoFV")
+	if (strcmp(idx_game[game], "PoDD") != 0 && strcmp(idx_game[game], "PoFV") != 0)
 	{
 		surv_base = Rubrics["SURV"][idx_game[game]][idx_difficulty[difficulty]]["base"].get<unsigned short>();
 		surv_exp = Rubrics["SURV"][idx_game[game]][idx_difficulty[difficulty]]["exp"].get<float>();
@@ -103,7 +103,7 @@ void getRubrics()
 {
 	getSurvRubrics();
 	// scoring rubric for MoF is not ready yet
-	if (idx_game[game] != "MoF")
+	if (strcmp(idx_game[game], "MoF") != 0)
 		getScoreRubrics();
 }
 
@@ -111,7 +111,7 @@ void getRubrics()
 void phantasmagoria()
 {
 	float shottypeMultiplier = getMultiplier(idx_game[game], shottype.c_str());
-	if (idx_difficulty[difficulty] == "Extra")
+	if (strcmp(idx_difficulty[difficulty], "Extra") == 0)
 		shottypeMultiplier = 1.0f;
 
 	drcpoints_survival = roundf(shottypeMultiplier * ((surv_base - ((surv_base - min) / lives * misses)) + (noCharge ? noBombBonus : 0) ));
@@ -132,17 +132,17 @@ void survivalPoints()
 	}
 	n += _bombs * bomb;
 
-	if (idx_game[game] == "PCB")
+	if (strcmp(idx_game[game], "PCB") == 0)
 	{
 		n += borderBreaks * bomb;
 	}
 
-	if (idx_game[game] == "TD")
+	if (strcmp(idx_game[game], "TD") == 0)
 	{
 		n += trances * bomb;
 	}
 
-	if (idx_game[game] == "HSiFS")
+	if (strcmp(idx_game[game], "HSiFS") == 0)
 	{
 		float decrement = 0;
 		// make a copy of releases
@@ -166,23 +166,23 @@ void survivalPoints()
 		}
 	}
 
-	drcpoints_survival = roundf(surv_base * pow(surv_exp, -n));
+	drcpoints_survival = surv_base * pow(surv_exp, -n);
 
-	if (idx_game[game] == "IN")
+	if (strcmp(idx_game[game], "IN") == 0)
 	{
-		if (idx_difficulty[difficulty] == "Extra")
+		if (strcmp(idx_difficulty[difficulty], "Extra") == 0)
 		{
 			drcpoints_survival += (ls_capped == 1) ? 5 : 0;
 		}
 		else
 		{
-			drcpoints_survival += ls_capped * ((idx_difficulty[difficulty] == "Easy") ? 1 : 2);
+			drcpoints_survival += ls_capped * ((strcmp(idx_difficulty[difficulty], "Easy") == 0) ? 1 : 2);
 		}
 	}
 
-	if (idx_difficulty[difficulty] != "Extra" && idx_difficulty[difficulty] != "Phantasm")
+	if (strcmp(idx_difficulty[difficulty], "Extra") != 0 && strcmp(idx_difficulty[difficulty], "Phantasm") != 0)
 	{
-		drcpoints_survival = roundf(drcpoints_survival * getMultiplier(idx_game[game], shottype.c_str()));
+		drcpoints_survival = drcpoints_survival * getMultiplier(idx_game[game], shottype.c_str());
 	}
 }
 
@@ -243,7 +243,7 @@ void scoringPoints()
 			else // consider this case as a normal one
 			{
 				std::string _shottype = removeSeason(shottype);
-				_shottype += (idx_game[game] == "HSiFS") ? bestSeason() : "";
+				_shottype += (strcmp(idx_game[game], "HSiFS") == 0) ? bestSeason() : "";
 				wr = WRs[idx_game[game]][idx_difficulty[difficulty]][_shottype][0].get<ull>();
 			}
 		}
@@ -255,14 +255,14 @@ void scoringPoints()
 	else
 	{
 		std::string _shottype = removeSeason(shottype);
-		_shottype += (idx_game[game] == "HSiFS") ? bestSeason() : "";
+		_shottype += (strcmp(idx_game[game], "HSiFS") == 0) ? bestSeason() : "";
 		wr = WRs[idx_game[game]][idx_difficulty[difficulty]][_shottype][0].get<ull>();
 	}
 
-	drcpoints_scoring = (score >= wr) ? roundf(score_base) : roundf(score_base * (float)pow((long double)score / wr, score_exp));
+	drcpoints_scoring = (score >= wr) ? score_base : score_base * (float)pow((long double)score / wr, score_exp);
 
 	// not calculating MoF scoring points yet
-	if (idx_game[game] == "MoF")
+	if (strcmp(idx_game[game], "MoF") == 0)
 	{
 		drcpoints_scoring = -1.0f;
 	}
@@ -271,39 +271,12 @@ void scoringPoints()
 // calculating DRC points for survival and scoring
 void calculateDRCPoints()
 {
-	if (idx_game[game] != "PoDD" && idx_game[game] != "PoFV")
+	if (strcmp(idx_game[game], "PoDD") != 0 && strcmp(idx_game[game], "PoFV") != 0)
 		survivalPoints();
 	else
 		phantasmagoria();
 	
 	scoringPoints();
-}
-
-// IN final section and last spell capture status
-inline void printFinalStage()
-{
-	if (idx_difficulty[difficulty] == "Extra")
-	{
-		std::cout << "Imperishable Shooting Captured: " << ((ls_capped == 1) ? "True" : "False") << std::endl;
-	}
-	else
-	{
-		switch (stage)
-		{
-		case 6: // 6A
-			std::cout << "Final: A" << std::endl;
-			std::cout << "Last spells captured: " << int(ls_capped) << "/" << Rubrics["MAX_LAST_SPELLS"][idx_difficulty[difficulty]]["FinalA"] << std::endl;
-			break;
-		case 7:	// 6B
-			std::cout << "Final: B" << std::endl;
-			std::cout << "Last spells captured: " << int(ls_capped) << "/" << Rubrics["MAX_LAST_SPELLS"][idx_difficulty[difficulty]]["FinalB"] << std::endl;
-			break;
-		default:
-			std::cout << "Final: ?" << std::endl;
-			std::cout << "Last spells captured: " << int(ls_capped) << "/?" << std::endl;
-			break;
-		}
-	}
 }
 
 /*

@@ -61,11 +61,11 @@ namespace ns_ufo
 			}
 			else if (vault[0] == 2 && vault[1] == 2)
 			{
-				ufos_green++;
-			}
-			else if (vault[0] == 3 && vault[3] == 3)
-			{
 				ufos_blue++;
+			}
+			else if (vault[0] == 3 && vault[1] == 3)
+			{
+				ufos_green++;
 			}
 			else
 			{
